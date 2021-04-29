@@ -1,14 +1,42 @@
 import React, { useEffect, useState } from 'react'
 
 import closeCircleFilled from '@iconify/icons-ant-design/close-circle-filled'
+import headPhone from '@iconify/icons-ant-design/customer-service-filled'
 import { Icon } from '@iconify/react'
 
 import logoPNG from '../../assets/img/logo.png'
 import bannerPNG from '../../assets/img/spelling_bee_banner.png'
 
 const Home = () => {
+  const [text, setText] = useState('')
+  const [time, setTime] = useState(0)
+
+  const [spelling, setSpelling] = useState('')
+  const [spellingSize, setSpellingSize] = useState(0)
+
   const [isModal, setIsModal] = useState(false)
   const [isGame, setIsGame] = useState(false)
+
+  const handleSpelling = (word) => {
+    const letter = word.slice(-1)
+    const newSpelling = spelling + letter
+
+    setText(letter)
+    setSpelling(newSpelling)
+    setSpellingSize(newSpelling.length)
+
+    console.log(newSpelling)
+  }
+
+  useEffect(() => {
+    if (isGame) {
+      setInterval(() => {
+        setTime(t => t + 1)
+      }, 1000);
+    } else {
+      setTime(0)
+    }
+  }, [isGame])
 
   useEffect(() => {
   }, [])
@@ -51,7 +79,40 @@ const Home = () => {
               </div>
             </div>
           :
-            <div className='game' />
+            <div className='game'>
+              <div className='info'>
+                <div className='left'>
+                  <div className='word'> 
+                    <h2>Palavra 2</h2>
+                    <Icon
+                      icon={headPhone}
+                      style={{ color: '#324161', fontSize: '35px' }}
+                      onClick={() => {}}
+                    />
+                  </div>
+                  <h3>Escutas restantes: 3</h3>
+                </div>
+                <div className='right'>
+                  <h2>Tempo: <span>{time}</span></h2>
+                  <h3>Letras digitadas: {spellingSize}</h3>
+                </div>
+              </div>
+              <div className='user-input'>
+                <input
+                  type='text'
+                  value={text}
+                  onChange={(e) => handleSpelling(e.target.value)}
+                />
+              </div>
+              <div className='buttons'>
+                <button className='btn-gray' onClick={() => {}}>
+                  <span>Finalizar</span>
+                </button>
+                <button className='btn-orange' onClick={() => {}}>
+                  <span>Próxima</span>
+                </button>
+              </div>
+            </div>
           }
           </div>
       </div>
