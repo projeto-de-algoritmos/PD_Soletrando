@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSpeechSynthesis } from 'react-speech-kit'
 
 import closeCircleFilled from '@iconify/icons-ant-design/close-circle-filled'
 import headPhone from '@iconify/icons-ant-design/customer-service-filled'
@@ -8,7 +9,10 @@ import logoPNG from '../../assets/img/logo.png'
 import bannerPNG from '../../assets/img/spelling_bee_banner.png'
 
 const Home = () => {
+  const { speak } = useSpeechSynthesis()
+
   const [text, setText] = useState('')
+  const [listens, setListens] = useState(4)
   const [time, setTime] = useState(0)
 
   const [spelling, setSpelling] = useState('')
@@ -16,6 +20,17 @@ const Home = () => {
 
   const [isModal, setIsModal] = useState(false)
   const [isGame, setIsGame] = useState(false)
+
+  const handleSpeaking = (word) => {
+    if (listens > 0) {
+      speak({
+        text: word,
+        rate: 0.8,
+      })
+
+      setListens(listens - 1)
+    }
+  }
 
   const handleSpelling = (word) => {
     const letter = word.slice(-1)
@@ -87,10 +102,10 @@ const Home = () => {
                     <Icon
                       icon={headPhone}
                       style={{ color: '#324161', fontSize: '35px' }}
-                      onClick={() => {}}
+                      onClick={() => handleSpeaking('O tiago é um falso.')}
                     />
                   </div>
-                  <h3>Escutas restantes: 3</h3>
+                  <h3>Escutas restantes: {listens}</h3>
                 </div>
                 <div className='right'>
                   <h2>Tempo: <span>{time}</span></h2>
