@@ -10,16 +10,17 @@ import bannerPNG from '../../assets/img/spelling_bee_banner.png'
 
 const Home = () => {
   const { speak } = useSpeechSynthesis()
-
-  const [text, setText] = useState('')
+  
   const [listens, setListens] = useState(4)
   const [time, setTime] = useState(0)
+  const [text, setText] = useState('')
 
+  const [points, setPoints] = useState(33)
   const [spelling, setSpelling] = useState('')
   const [spellingSize, setSpellingSize] = useState(0)
 
+  const [game, setGame] = useState('')
   const [isModal, setIsModal] = useState(false)
-  const [isGame, setIsGame] = useState(false)
 
   const handleSpeaking = (word) => {
     if (listens > 0) {
@@ -28,7 +29,7 @@ const Home = () => {
         rate: 0.8,
       })
 
-      setListens(listens - 1)
+      setListens(l => l - 1)
     }
   }
 
@@ -44,17 +45,24 @@ const Home = () => {
   }
 
   useEffect(() => {
-    if (isGame) {
-      setInterval(() => {
+    let interval
+
+    if (game === 'start') {
+      interval = setInterval(() => {
         setTime(t => t + 1)
-      }, 1000);
+      }, 1000)
+    } else if (game === 'end') {
+      clearInterval(interval)
     } else {
       setTime(0)
     }
-  }, [isGame])
+  }, [game])
 
   useEffect(() => {
-  }, [])
+    if (time >= 999) {
+      setGame('end')
+    }
+  }, [time])
 
   return (
     <div className='container'>
@@ -76,9 +84,9 @@ const Home = () => {
       </div>
 
       {/* page */}
-      <div className={`page ${isGame}`}>
-        <div className={`central ${isGame}`}>
-          {!isGame ?
+      <div className='page'>
+        <div className='central'>
+          {game === '' ?
             <div className='home'>
               <div className='banner'>
                 <img src={bannerPNG} width={540} alt='spelling-bee' />
@@ -88,12 +96,12 @@ const Home = () => {
               </div>
               <div className='description'>
                 <h2>Soletre as palavras que você ouvir</h2>
-                <button onClick={() => setIsGame(true)}>
+                <button onClick={() => setGame('start')}>
                   <span>Começar</span>
                 </button>
               </div>
             </div>
-          :
+          : game === 'start' ?
             <div className='game'>
               <div className='info'>
                 <div className='left'>
@@ -101,7 +109,7 @@ const Home = () => {
                     <h2>Palavra 2</h2>
                     <Icon
                       icon={headPhone}
-                      style={{ color: '#324161', fontSize: '35px' }}
+                      style={{ fontSize: '35px' }}
                       onClick={() => handleSpeaking('O tiago é um falso.')}
                     />
                   </div>
@@ -120,12 +128,30 @@ const Home = () => {
                 />
               </div>
               <div className='buttons'>
-                <button className='btn-gray' onClick={() => {}}>
+                <button className='btn-gray' onClick={() => setGame('end')}>
                   <span>Finalizar</span>
                 </button>
                 <button className='btn-orange' onClick={() => {}}>
                   <span>Próxima</span>
                 </button>
+              </div>
+            </div>
+          : 
+            <div className='end'>
+              <div className='score'>
+                <div className='points'>
+                  <h2>{points}</h2>
+                </div>
+              </div>
+
+              <div className='spelling'>
+                <div className='correct'>
+                  <h3>paralelepípedo</h3>
+                </div>
+                <div className='wrong'>
+                  <h3>paralerepípedo</h3>
+                </div>
+                <span>5 pontos</span>
               </div>
             </div>
           }

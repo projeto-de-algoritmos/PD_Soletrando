@@ -20,7 +20,7 @@ img {
 button {
   background-color: #f89820;
   font-family: "RedHatDisplay", sans-serif;
-  font-size: 18px;
+  font-size: 1.17em;
   font-weight: 700;
   color: #ffffff;
   border: 0;
@@ -114,8 +114,12 @@ input {
   align-items: center;
 }
 .game .info .word svg {
+  color: #324161;
   margin-left: 15px;
   cursor: pointer;
+}
+.game .info .word svg:hover {
+  color: #394763;
 }
 .game .info .right {
   text-align: right;
@@ -164,6 +168,46 @@ input {
   background-color: #394763;
 }
 
+.end .score {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+.end .score .points {
+  background-color: #f89820;
+  border-radius: 25px;
+  display: inline-block;
+  padding: 30px 50px;
+}
+.end .score h2 {
+  font-size: 4em;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+}
+.end .spelling {
+  margin: 25px 0;
+}
+.end .spelling h3 {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  padding: 5px 10px;
+}
+.end .spelling span {
+  display: block;
+  font-size: 1.17em;
+  text-align: center;
+  margin: 10px 0;
+}
+.end .spelling .correct h3 {
+  background-color: #32936f;
+}
+.end .spelling .wrong h3 {
+  background-color: #ca3c25;
+}
+
 .modal-overlay {
   background-color: rgba(0, 0, 0, 0.8);
   height: 100%;
@@ -200,7 +244,7 @@ input {
 .modal h5 {
   font-size: 16px;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   margin-top: 5px;
   margin-bottom: 5px;
   display: inline-block;
@@ -215,7 +259,7 @@ input {
 .modal p {
   font-size: 14px;
   font-weight: 400;
-  color: #fff;
+  color: #ffffff;
   margin-bottom: 0;
 }
 
