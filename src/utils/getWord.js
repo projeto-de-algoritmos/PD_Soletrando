@@ -1,7 +1,6 @@
-// import palavras from '../assets/palavras.json'
-const palavras = require('../assets/palavras.json')
+import palavras from '../assets/palavras.json'
 
-const getWord = (nivel) => {
+export const getWord = (nivel) => {
     nivel = parseInt(nivel);
     if (nivel < 1) return false;
     if (nivel >= 4) nivel = 4;
@@ -11,5 +10,3 @@ const getWord = (nivel) => {
 
     return palavras[niveis[nivel]][indexPalavraAleatoria];
 }
-
-console.log(getWord(4))
