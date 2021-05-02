@@ -9,7 +9,6 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: 0.4s;
 }
 
 img {
@@ -27,6 +26,7 @@ button {
   border-radius: 25px;
   padding: 10px 60px;
   cursor: pointer;
+  transition: 0.4s;
 }
 button:hover {
   background-color: #f4a548;
@@ -147,7 +147,7 @@ input {
   font-size: 5em;
   font-weight: 900;
   border-radius: 30px;
-  box-shadow: 0px 4px 20px rgb(50 65 97 / 5%);
+  box-shadow: 0px 4px 20px rgb(50 65 97 / 15%);
   text-align: center;
   text-transform: uppercase;
 }
@@ -223,18 +223,19 @@ input {
   visibility: visible;
 }
 .modal {
-  background: #3454f5;
+  background: #f89820;
   border-radius: 20px;
-  width: 350px;
+  width: 450px;
   padding: 20px;
   position: absolute;
   float: left;
   left: 50%;
   top: 0%;
   transform: translateX(-50%);
+  transition: 0.4s;
 }
 .modal-overlay.true .modal {
-  top: 30%;
+  top: 20%;
 }
 .modal .modal-header {
   display: flex;
@@ -251,10 +252,11 @@ input {
   line-height: 1;
 }
 .modal svg {
+  color: #ffffff;
   cursor: pointer;
 }
 .modal svg:hover {
-  color: #e4347f !important;
+  color: #324161;
 }
 .modal p {
   font-size: 14px;

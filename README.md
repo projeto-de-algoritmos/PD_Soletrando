@@ -10,10 +10,11 @@
 | 18/0114689	| Tiago Samuel Rodrigues |
 
 ## Sobre 
-Jogo de soletrar palavras. Utiliza do algoritmo de similaridades de palavras para calcular a nota do participante.
+Jogo de soletrar palavras. Utiliza o algoritmo "Edit Distance" para calcular a nota do participante.
 
 ## Screenshots
-Adicione 3 ou mais screenshots do projeto em funcionamento.
+<img src='./screenshots/img2.png' />
+<img src='./screenshots/img1.png' />
 
 ## Instalação 
 **Linguagem**: Javascript<br>

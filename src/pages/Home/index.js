@@ -8,14 +8,20 @@ import { Icon } from '@iconify/react'
 import logoPNG from '../../assets/img/logo.png'
 import bannerPNG from '../../assets/img/spelling_bee_banner.png'
 
+import { getWord } from '../../utils/getWord'
+import { getGrade } from '../../utils/getGrade'
+
 const Home = () => {
-  const { speak } = useSpeechSynthesis()
-  
+  const { speak, voices } = useSpeechSynthesis()
+
   const [listens, setListens] = useState(4)
   const [time, setTime] = useState(0)
   const [text, setText] = useState('')
 
-  const [points, setPoints] = useState(33)
+  const [word, setWord] = useState('')
+  const [words, setWords] = useState([])
+  const [level, setLevel] = useState(1)
+  const [points, setPoints] = useState(0)
   const [spelling, setSpelling] = useState('')
   const [spellingSize, setSpellingSize] = useState(0)
 
@@ -23,10 +29,13 @@ const Home = () => {
   const [isModal, setIsModal] = useState(false)
 
   const handleSpeaking = (word) => {
+    const voiceBR = voices.filter(v => v.lang === 'pt-BR')[0]
+
     if (listens > 0) {
       speak({
         text: word,
-        rate: 0.8,
+        rate: 0.7,
+        voice: voiceBR,
       })
 
       setListens(l => l - 1)
@@ -44,6 +53,28 @@ const Home = () => {
     console.log(newSpelling)
   }
 
+  const nextWord = () => {
+    if (word !== spelling) {
+      const userPoints = getGrade(word, spelling, words)
+      console.log(userPoints)
+      setPoints(userPoints.nota)
+      setGame('end')
+
+      return
+    }
+
+    const newWord = getWord(level + 1)
+    setWord(newWord)
+    setWords([...words, word])
+    setLevel(level + 1)
+    setListens(4)
+    handleSpeaking(newWord)
+
+    setText('')
+    setSpelling('')
+    setSpellingSize(0)
+  }
+
   useEffect(() => {
     let interval
 
@@ -51,6 +82,15 @@ const Home = () => {
       interval = setInterval(() => {
         setTime(t => t + 1)
       }, 1000)
+
+      const newWord = getWord(1)
+      setWord(newWord)
+      setLevel(1)
+      handleSpeaking(newWord)
+
+      setText('')
+      setSpelling('')
+      setSpellingSize(0)
     } else if (game === 'end') {
       clearInterval(interval)
     } else {
@@ -101,61 +141,66 @@ const Home = () => {
                 </button>
               </div>
             </div>
-          : game === 'start' ?
-            <div className='game'>
-              <div className='info'>
-                <div className='left'>
-                  <div className='word'> 
-                    <h2>Palavra 2</h2>
-                    <Icon
-                      icon={headPhone}
-                      style={{ fontSize: '35px' }}
-                      onClick={() => handleSpeaking('O tiago é um falso.')}
-                    />
+            : game === 'start' ?
+              <div className='game'>
+                <div className='info'>
+                  <div className='left'>
+                    <div className='word'>
+                      <h2>Palavra {level}</h2>
+                      <Icon
+                        icon={headPhone}
+                        style={{ fontSize: '35px' }}
+                        onClick={() => handleSpeaking(word)}
+                      />
+                    </div>
+                    <h3>Escutas restantes: {listens}</h3>
                   </div>
-                  <h3>Escutas restantes: {listens}</h3>
+                  <div className='right'>
+                    <h2>Tempo: <span>{time}</span></h2>
+                    <h3>Letras digitadas: {spellingSize}</h3>
+                  </div>
                 </div>
-                <div className='right'>
-                  <h2>Tempo: <span>{time}</span></h2>
-                  <h3>Letras digitadas: {spellingSize}</h3>
+                <div className='user-input'>
+                  <input
+                    type='text'
+                    value={text}
+                    onChange={(e) => handleSpelling(e.target.value)}
+                  />
                 </div>
-              </div>
-              <div className='user-input'>
-                <input
-                  type='text'
-                  value={text}
-                  onChange={(e) => handleSpelling(e.target.value)}
-                />
-              </div>
-              <div className='buttons'>
-                <button className='btn-gray' onClick={() => setGame('end')}>
-                  <span>Finalizar</span>
-                </button>
-                <button className='btn-orange' onClick={() => {}}>
-                  <span>Próxima</span>
-                </button>
-              </div>
-            </div>
-          : 
-            <div className='end'>
-              <div className='score'>
-                <div className='points'>
-                  <h2>{points}</h2>
+                <div className='buttons'>
+                  <button className='btn-gray' onClick={() => setGame('end')}>
+                    <span>Finalizar</span>
+                  </button>
+                  <button className='btn-orange' onClick={() => nextWord()}>
+                    <span>Próxima</span>
+                  </button>
                 </div>
               </div>
+              :
+              <div className='end'>
+                <div className='score'>
+                  <div className='points'>
+                    <h2>{points}</h2>
+                  </div>
+                </div>
 
-              <div className='spelling'>
-                <div className='correct'>
-                  <h3>paralelepípedo</h3>
+                <div className='spelling'>
+                  <div className='correct'>
+                    <h3>{word}</h3>
+                  </div>
+                  <div className='wrong'>
+                    <h3>{spelling}</h3>
+                  </div>
                 </div>
-                <div className='wrong'>
-                  <h3>paralerepípedo</h3>
+
+                <div className='description'>
+                  <button onClick={() => setGame('start')}>
+                    <span>Tentar novamente</span>
+                  </button>
                 </div>
-                <span>5 pontos</span>
               </div>
-            </div>
           }
-          </div>
+        </div>
       </div>
 
       {/* modal */}
@@ -165,16 +210,18 @@ const Home = () => {
             <h5 className='modal-title'>Sobre</h5>
             <Icon
               icon={closeCircleFilled}
-              style={{ color: '#fff', fontSize: '25px' }}
-              onClick={() => {
-                localStorage.setItem('modal', '1')
-                setIsModal(false)
-              }}
+              style={{ fontSize: '25px' }}
+              onClick={() => setIsModal(false)}
             />
           </div>
           <div className='modal-body'>
-            <p>
-              Sobre
+            <p align='justify'>
+              O jogo Soletrando é um resultado de um trabalho da matéria Projeto de Algoritmos.<br /><br />Ele utiliza do algoritmo "Edit Distance",
+              de programação dinâmica para calcular a pontuação final do usuário.<br /><br />Quanto maior a gravidade do erro, menor sua pontuação.
+              O usuário ganha pontos também soletrando corretamente as palavras.<br />< br />
+              ** Observação:<br />1) Caso não esteja ouvindo as palavras, tente em outro navegador.< br />2) As vozes são diferentes em cada navegador.<br /><br />
+              Navegadores que funcionaram nos testes:<br />- Chrome<br />- Safari<br />- Firefox<br /><br />
+              Navegadores que não funcionaram nos testes:<br />- Brave
             </p>
           </div>
         </div>
