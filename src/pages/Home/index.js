@@ -16,6 +16,7 @@ const Home = () => {
 
   const [listens, setListens] = useState(4)
   const [time, setTime] = useState(0)
+  const [finalTime, setFinalTime] = useState(0)
   const [text, setText] = useState('')
 
   const [word, setWord] = useState('')
@@ -23,13 +24,16 @@ const Home = () => {
   const [level, setLevel] = useState(1)
   const [points, setPoints] = useState(0)
   const [spelling, setSpelling] = useState('')
+  const [comparation, setComparation] = useState([])
   const [spellingSize, setSpellingSize] = useState(0)
 
   const [game, setGame] = useState('')
   const [isModal, setIsModal] = useState(false)
 
   const handleSpeaking = (word) => {
-    const voiceBR = voices.filter(v => v.lang === 'pt-BR')[0]
+    const voiceBR = voices.filter(v => 
+      v.name === 'Luciana' || v.lang === 'pt-BR'
+    )[0]
 
     if (listens > 0) {
       speak({
@@ -49,25 +53,23 @@ const Home = () => {
     setText(letter)
     setSpelling(newSpelling)
     setSpellingSize(newSpelling.length)
-
-    console.log(newSpelling)
   }
 
   const nextWord = () => {
     if (word !== spelling) {
-      const userPoints = getGrade(word, spelling, words)
-      console.log(userPoints)
-      setPoints(userPoints.nota)
+      const beePoints = getGrade(word, spelling, words)
+      setComparation(beePoints.comparation)
+      setPoints(beePoints.nota)
       setGame('end')
-
       return
     }
 
     const newWord = getWord(level + 1)
     setWord(newWord)
     setWords([...words, word])
-    setLevel(level + 1)
+
     setListens(4)
+    setLevel(level + 1)
     handleSpeaking(newWord)
 
     setText('')
@@ -76,25 +78,26 @@ const Home = () => {
   }
 
   useEffect(() => {
-    let interval
-
     if (game === 'start') {
-      interval = setInterval(() => {
+      setTime(0)
+
+      setInterval(() => {
         setTime(t => t + 1)
       }, 1000)
 
       const newWord = getWord(1)
       setWord(newWord)
+      setWords([word])
+
       setLevel(1)
+      setListens(4)
       handleSpeaking(newWord)
 
       setText('')
       setSpelling('')
       setSpellingSize(0)
     } else if (game === 'end') {
-      clearInterval(interval)
-    } else {
-      setTime(0)
+      setFinalTime(time)
     }
   }, [game])
 
@@ -189,12 +192,28 @@ const Home = () => {
                     <h3>{word}</h3>
                   </div>
                   <div className='wrong'>
-                    <h3>{spelling}</h3>
+                    <h3>
+                      {comparation.map((letter, index) => {
+                        if (letter[1]) {
+                          return (
+                            <span key={index}>
+                              {letter[0] ? letter[0] : '\xa0'}
+                            </span>
+                          )
+                        }
+                        return (
+                          <span key={index} className='error'>
+                            {letter[0] ? letter[0] : '\xa0'}
+                          </span>
+                        )
+                      })}
+                    </h3>
                   </div>
+                  <h4>Tempo: {finalTime}</h4>
                 </div>
 
                 <div className='description'>
-                  <button onClick={() => setGame('start')}>
+                  <button class='btn-gray' onClick={() => setGame('start')}>
                     <span>Tentar novamente</span>
                   </button>
                 </div>
