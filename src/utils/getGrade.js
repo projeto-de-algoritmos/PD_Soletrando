@@ -25,6 +25,9 @@ export const getGrade = (lastWordCorrected, lastWordInput, lastWords) => {
     if (lastWordCorrected[index] === lastWordInput[index]) comparation.push([lastWordInput[index], true])
     else comparation.push([lastWordInput[index], false])
   }
+  if (lastWordInput.length > lastWordCorrected.length) {
+    for (let i = lastWordCorrected.length; i < lastWordInput.length; i++) comparation.push([lastWordInput[i], false])
+  }
 
   return { nota: Math.max(0, nota), comparation }
 }
