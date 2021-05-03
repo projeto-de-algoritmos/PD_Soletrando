@@ -194,13 +194,15 @@ button.btn-gray:hover {
   font-weight: 700;
   color: #ffffff;
   margin: 0;
-  letter-spacing: 3px;
   padding: 5px 10px;
 }
 .end .spelling h4 {
   font-size: 1.17em;
   text-align: center;
   margin: 10px 0;
+}
+.end .spelling span {
+  padding: 0 2px;
 }
 .end .spelling .correct h3 {
   background-color: #32936f;
@@ -211,7 +213,6 @@ button.btn-gray:hover {
 .end .spelling span.error {
   color: #ca3c25;
   background-color: #ffff;
-  padding: 0 0 0 2px;
 }
 
 .modal-overlay {

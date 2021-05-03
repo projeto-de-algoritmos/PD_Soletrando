@@ -16,7 +16,7 @@ const Home = () => {
 
   const [listens, setListens] = useState(4)
   const [time, setTime] = useState(0)
-  const [finalTime, setFinalTime] = useState(0)
+  const [timer, setTimer] = useState(null)
   const [text, setText] = useState('')
 
   const [word, setWord] = useState('')
@@ -81,9 +81,10 @@ const Home = () => {
     if (game === 'start') {
       setTime(0)
 
-      setInterval(() => {
+      const interval = setInterval(() => {
         setTime(t => t + 1)
       }, 1000)
+      setTimer(interval)
 
       const newWord = getWord(1)
       setWord(newWord)
@@ -97,7 +98,7 @@ const Home = () => {
       setSpelling('')
       setSpellingSize(0)
     } else if (game === 'end') {
-      setFinalTime(time)
+      clearInterval(timer)
     }
   }, [game])
 
@@ -189,7 +190,13 @@ const Home = () => {
 
                 <div className='spelling'>
                   <div className='correct'>
-                    <h3>{word}</h3>
+                    <h3>
+                      {word.split('').map((letter, index) => (
+                        <span key={index}>
+                          {letter}
+                        </span>
+                      ))}
+                    </h3>
                   </div>
                   <div className='wrong'>
                     <h3>
@@ -209,11 +216,11 @@ const Home = () => {
                       })}
                     </h3>
                   </div>
-                  <h4>Tempo: {finalTime}</h4>
+                  <h4>Tempo: {time}</h4>
                 </div>
 
                 <div className='description'>
-                  <button class='btn-gray' onClick={() => setGame('start')}>
+                  <button className='btn-gray' onClick={() => setGame('start')}>
                     <span>Tentar novamente</span>
                   </button>
                 </div>
